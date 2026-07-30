@@ -1,0 +1,62 @@
+{% extends 'base_app.html' %}
+{% block title %}About · Smart Firewall{% endblock %}
+{% block crumb %}System{% endblock %}
+{% block heading %}About this system{% endblock %}
+
+{% block content %}
+<div class="stack">
+  <div class="card">
+    <div class="card-body">
+      <div class="eyebrow">How it works</div>
+      <h2 style="font-size:22px;margin:8px 0 12px;">From packet to verdict in four stages</h2>
+      <p class="muted" style="max-width:70ch;">Every connection on the monitored network passes through the same pipeline. Nothing is hard-coded to a rule — the decision to allow, flag, or block comes from a model that learned the difference between normal and hostile traffic.</p>
+      <div class="grid grid-4" style="margin-top:20px;">
+        <div class="card stat">
+          <div class="label mono" style="color:var(--teal)">01 · Capture</div>
+          <p style="margin:10px 0 0;font-size:14px;">Packets are sniffed live and grouped into bidirectional flows with per-flow timing, byte counts, and TCP state.</p>
+        </div>
+        <div class="card stat">
+          <div class="label mono" style="color:var(--teal)">02 · Features</div>
+          <p style="margin:10px 0 0;font-size:14px;">Each flow becomes an NSL-KDD-style feature vector using two-second and hundred-connection rolling windows.</p>
+        </div>
+        <div class="card stat">
+          <div class="label mono" style="color:var(--teal)">03 · Classify</div>
+          <p style="margin:10px 0 0;font-size:14px;">A Random Forest scores the vector and returns a verdict with a confidence the operator can tune against.</p>
+        </div>
+        <div class="card stat">
+          <div class="label mono" style="color:var(--teal)">04 · Enforce</div>
+          <p style="margin:10px 0 0;font-size:14px;">Repeat offenders are dropped through pfSense or iptables, an alert is raised, and the event is logged.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-head"><h3>Project</h3></div>
+      <div class="card-body">
+        <dl class="kv">
+          <dt>Title</dt><dd>AI-Based Smart Firewall for Small Network Security</dd>
+          <dt>Approach</dt><dd>Machine-learning anomaly detection & automated response</dd>
+          <dt>Dataset</dt><dd>NSL-KDD (Tavallaee et al., 2009)</dd>
+          <dt>Classifier</dt><dd>Random Forest (compared against Decision Tree, Naïve Bayes)</dd>
+          <dt>Enforcement</dt><dd>pfSense API · iptables · simulation</dd>
+          <dt>Department</dt><dd>Information Technology, IIU Islamabad</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Stack</h3></div>
+      <div class="card-body">
+        <div class="pill-list">
+          {% for t in ['Python', 'Flask', 'scikit-learn', 'Random Forest', 'scapy', 'pfSense', 'iptables', 'SQLite', 'NSL-KDD', 'Wireshark', 'Kali Linux'] %}
+          <span class="badge badge-neutral">{{ t }}</span>
+          {% endfor %}
+        </div>
+        <hr class="hr">
+        <p class="muted" style="font-size:13.5px;">All attack testing is performed inside an isolated virtual lab. No test is ever run against a live or unauthorized network.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base_app.html' %}
+{% block title %}Blocked IPs · Smart Firewall{% endblock %}
+{% block crumb %}Operations{% endblock %}
+{% block heading %}Blocked IPs{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-head">
+    <h3>Blocklist</h3>
+    <span class="mono faint">addresses dropped by the enforcement layer</span>
+  </div>
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr><th>IP address</th><th>Reason</th><th>Category</th><th>Confidence</th><th>Enforced by</th><th>Blocked at</th><th>State</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% if not rows %}
+        <tr><td colspan="8" class="empty">Nothing is blocked right now.</td></tr>
+        {% endif %}
+        {% for r in rows %}
+        <tr data-id="{{ r.id }}">
+          <td class="ip">{{ r.ip }}</td>
+          <td class="faint" style="font-size:13px;">{{ r.reason }}</td>
+          <td><span class="mono" style="font-size:12px;color:var(--amber)">{{ r.attack_type }}</span></td>
+          <td class="mono">{{ r.confidence|round(1) }}%</td>
+          <td><span class="badge badge-neutral">{{ r.enforcement }}</span></td>
+          <td class="mono faint" style="font-size:12.5px;">{{ r.blocked_at.strftime('%Y-%m-%d %H:%M') }}</td>
+          <td class="statecell">{% if r.active %}<span class="badge badge-block">active</span>{% else %}<span class="badge badge-neutral">released</span>{% endif %}</td>
+          <td>{% if r.active %}<button class="btn btn-ghost btn-sm unblock" data-id="{{ r.id }}">Unblock</button>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.unblock').forEach(b => {
+  b.addEventListener('click', async () => {
+    try {
+      const r = await post(`/api/blocked/${b.dataset.id}/unblock`);
+      const row = b.closest('tr');
+      row.querySelector('.statecell').innerHTML = '<span class="badge badge-neutral">released</span>';
+      b.remove();
+      toast(r.message);
+    } catch (e) { toast('Could not unblock', 'err'); }
+  });
+});
+</script>
+{% endblock %}

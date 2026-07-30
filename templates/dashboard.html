@@ -1,0 +1,103 @@
+{% extends 'base_app.html' %}
+{% block title %}Dashboard · Smart Firewall{% endblock %}
+{% block crumb %}Operations{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+
+{% block topbar_actions %}
+<button class="btn btn-primary btn-sm" id="captureBtn">Start capture</button>
+{% endblock %}
+
+{% block content %}
+<div class="stack">
+
+  <div class="card">
+    <div class="card-body">
+      <div class="controls row-between">
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <span class="eyebrow">Simulate traffic</span>
+          <button class="btn btn-ghost btn-sm sim" data-s="benign">Benign</button>
+          <button class="btn btn-ghost btn-sm sim" data-s="portscan">Port scan</button>
+          <button class="btn btn-ghost btn-sm sim" data-s="dos">DoS flood</button>
+          <button class="btn btn-ghost btn-sm sim" data-s="bruteforce">Brute force</button>
+          <button class="btn btn-ghost btn-sm sim" data-s="mixed">Mixed attack</button>
+        </div>
+        <div class="mono faint" id="statusLine">engine idle</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-4">
+    <div class="card stat accent-teal">
+      <div class="label">Flows analyzed</div>
+      <div class="value mono c-teal" id="s_flows">0</div>
+      <div class="foot">since engine start</div>
+    </div>
+    <div class="card stat accent-amber">
+      <div class="label">Flagged</div>
+      <div class="value mono c-amber" id="s_flagged">0</div>
+      <div class="foot">suspicious, under threshold</div>
+    </div>
+    <div class="card stat accent-rose">
+      <div class="label">Blocked</div>
+      <div class="value mono c-rose" id="s_blocked">0</div>
+      <div class="foot">enforced drops</div>
+    </div>
+    <div class="card stat accent-indigo">
+      <div class="label">Active blocks</div>
+      <div class="value mono c-indigo" id="s_active">0</div>
+      <div class="foot"><span id="s_alerts">0</span> open alerts</div>
+    </div>
+  </div>
+
+  <div class="grid grid-3">
+    <div class="card span-2">
+      <div class="card-head">
+        <h3>Live throughput</h3>
+        <span class="mono faint" id="rateNow">0 flows/s</span>
+      </div>
+      <div class="card-body throughput">
+        <canvas class="spark-lg" id="rateChart" height="120"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Threat mix</h3></div>
+      <div class="card-body">
+        <canvas id="mixChart" height="180"></canvas>
+        <div id="mixEmpty" class="empty" style="display:none;padding:24px;">No threats detected yet</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-head">
+        <h3>Recent detections</h3>
+        <a class="mono faint" href="{{ url_for('views.traffic') }}" style="font-size:12px;">view all →</a>
+      </div>
+      <div class="table-wrap">
+        <table class="data">
+          <thead><tr><th>Time</th><th>Source</th><th>Service</th><th>Verdict</th><th>Confidence</th></tr></thead>
+          <tbody id="feedBody"><tr><td colspan="5" class="empty">Waiting for traffic…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">
+        <h3>Protocol split</h3>
+        <a class="mono faint" href="{{ url_for('views.analytics') }}" style="font-size:12px;">analytics →</a>
+      </div>
+      <div class="card-body">
+        <div id="protoList" class="stack" style="gap:12px;">
+          <div class="empty">No traffic yet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

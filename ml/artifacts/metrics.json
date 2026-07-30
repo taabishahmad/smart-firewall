@@ -1,0 +1,192 @@
+{
+  "best_model": "Random Forest",
+  "trained_at": "2026-07-29 14:24:03",
+  "dataset": {
+    "name": "NSL-KDD",
+    "train_rows": 125973,
+    "test_rows": 22544,
+    "features_used": 25,
+    "attack_ratio_train": 46.54
+  },
+  "within_distribution": [
+    {
+      "model": "Random Forest",
+      "accuracy": 99.9,
+      "precision": 99.93,
+      "recall": 99.86,
+      "f1": 99.89,
+      "roc_auc": 100.0,
+      "train_seconds": 7.87
+    },
+    {
+      "model": "Decision Tree",
+      "accuracy": 99.76,
+      "precision": 99.7,
+      "recall": 99.79,
+      "f1": 99.74,
+      "roc_auc": 99.76,
+      "train_seconds": 0.55
+    },
+    {
+      "model": "Naive Bayes",
+      "accuracy": 53.39,
+      "precision": 47.9,
+      "recall": 1.65,
+      "f1": 3.2,
+      "roc_auc": 91.56,
+      "train_seconds": 0.16
+    }
+  ],
+  "generalisation": [
+    {
+      "model": "Random Forest",
+      "accuracy": 78.32,
+      "precision": 96.67,
+      "recall": 64.12,
+      "f1": 77.1,
+      "roc_auc": 96.49
+    },
+    {
+      "model": "Decision Tree",
+      "accuracy": 77.59,
+      "precision": 96.67,
+      "recall": 62.8,
+      "f1": 76.14,
+      "roc_auc": 80.04
+    },
+    {
+      "model": "Naive Bayes",
+      "accuracy": 45.04,
+      "precision": 93.85,
+      "recall": 3.69,
+      "f1": 7.09,
+      "roc_auc": 86.67
+    }
+  ],
+  "confusion_matrix_within": [
+    [
+      13469,
+      0
+    ],
+    [
+      1,
+      11725
+    ]
+  ],
+  "confusion_matrix_generalisation": [
+    [
+      9428,
+      283
+    ],
+    [
+      4605,
+      8228
+    ]
+  ],
+  "feature_importances": [
+    {
+      "feature": "src_bytes",
+      "importance": 0.2528
+    },
+    {
+      "feature": "dst_bytes",
+      "importance": 0.1164
+    },
+    {
+      "feature": "flag",
+      "importance": 0.1116
+    },
+    {
+      "feature": "same_srv_rate",
+      "importance": 0.092
+    },
+    {
+      "feature": "dst_host_srv_count",
+      "importance": 0.0577
+    },
+    {
+      "feature": "dst_host_same_srv_rate",
+      "importance": 0.0466
+    },
+    {
+      "feature": "count",
+      "importance": 0.0421
+    },
+    {
+      "feature": "protocol_type",
+      "importance": 0.036
+    },
+    {
+      "feature": "dst_host_diff_srv_rate",
+      "importance": 0.036
+    },
+    {
+      "feature": "service",
+      "importance": 0.0308
+    },
+    {
+      "feature": "diff_srv_rate",
+      "importance": 0.0255
+    },
+    {
+      "feature": "dst_host_same_src_port_rate",
+      "importance": 0.0251
+    },
+    {
+      "feature": "dst_host_count",
+      "importance": 0.0182
+    },
+    {
+      "feature": "srv_count",
+      "importance": 0.0165
+    },
+    {
+      "feature": "dst_host_srv_serror_rate",
+      "importance": 0.0147
+    },
+    {
+      "feature": "srv_serror_rate",
+      "importance": 0.0142
+    },
+    {
+      "feature": "dst_host_srv_diff_host_rate",
+      "importance": 0.0137
+    },
+    {
+      "feature": "dst_host_serror_rate",
+      "importance": 0.0116
+    },
+    {
+      "feature": "dst_host_rerror_rate",
+      "importance": 0.0098
+    },
+    {
+      "feature": "serror_rate",
+      "importance": 0.0097
+    },
+    {
+      "feature": "srv_rerror_rate",
+      "importance": 0.0058
+    },
+    {
+      "feature": "dst_host_srv_rerror_rate",
+      "importance": 0.004
+    },
+    {
+      "feature": "duration",
+      "importance": 0.0033
+    },
+    {
+      "feature": "rerror_rate",
+      "importance": 0.003
+    },
+    {
+      "feature": "srv_diff_host_rate",
+      "importance": 0.0029
+    }
+  ],
+  "class_labels": [
+    "normal",
+    "malicious"
+  ]
+}

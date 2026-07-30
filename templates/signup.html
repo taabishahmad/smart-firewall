@@ -1,0 +1,57 @@
+{% extends 'base_auth.html' %}
+{% block title %}Create account · Smart Firewall{% endblock %}
+{% block body %}
+<div class="auth-wrap">
+  <section class="auth-brandside">
+    <div class="brandmark">
+      <div class="glyph">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#35d0b6" stroke-width="1.8">
+          <path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/>
+          <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="name">Smart<span>FW</span></div>
+    </div>
+    <div class="pitch">
+      <div class="eyebrow">Get started</div>
+      <h2>Create an administrator account.</h2>
+      <p>Each administrator gets full access to the console: live monitoring, threat response, model analytics, and firewall settings.</p>
+    </div>
+    <div class="mono faint" style="font-size:12px;">All testing runs inside an isolated lab network.</div>
+    <div class="radar"><div class="ring"></div><div class="sweep"></div></div>
+  </section>
+
+  <section class="auth-formside">
+    <div class="auth-card">
+      <h1>Create account</h1>
+      <p class="sub">Set up your administrator login.</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}<ul class="flashes">{% for cat, msg in messages %}<li class="flash flash-{{ cat }}">{{ msg }}</li>{% endfor %}</ul>{% endif %}
+      {% endwith %}
+
+      <form method="post" action="{{ url_for('auth.signup') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="field">
+          <label for="username">Username</label>
+          <input class="input" id="username" name="username" autocomplete="username" required autofocus>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input class="input" id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input class="input" id="password" name="password" type="password" autocomplete="new-password" required>
+        </div>
+        <div class="field">
+          <label for="confirm">Confirm password</label>
+          <input class="input" id="confirm" name="confirm" type="password" autocomplete="new-password" required>
+        </div>
+        <button class="btn btn-primary block-btn" type="submit">Create account</button>
+      </form>
+      <p class="auth-alt">Already registered? <a href="{{ url_for('auth.login') }}">Sign in</a></p>
+    </div>
+  </section>
+</div>
+{% endblock %}

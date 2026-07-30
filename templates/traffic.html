@@ -1,0 +1,76 @@
+{% extends 'base_app.html' %}
+{% block title %}Live Traffic · Smart Firewall{% endblock %}
+{% block crumb %}Operations{% endblock %}
+{% block heading %}Live Traffic{% endblock %}
+
+{% block topbar_actions %}
+<div class="seg" id="filter">
+  <button class="on" data-v="">All</button>
+  <button data-v="allow">Allowed</button>
+  <button data-v="flag">Flagged</button>
+  <button data-v="block">Blocked</button>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-head">
+    <h3>Connection stream</h3>
+    <span class="mono faint" id="feedMeta">live · updates every 2s</span>
+  </div>
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr>
+          <th>Time</th><th>Source</th><th>Destination</th><th>Proto</th>
+          <th>Service</th><th>Flag</th><th>Bytes ↑/↓</th><th>Category</th>
+          <th>Verdict</th><th>Conf.</th>
+        </tr>
+      </thead>
+      <tbody id="feedBody">
+        <tr><td colspan="10" class="empty">No traffic captured yet. Start a capture or simulate an attack from the dashboard.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  let verdict = '';
+  function badge(v) {
+    const map = { allow: 'badge-allow', flag: 'badge-flag', block: 'badge-block' };
+    return `<span class="badge ${map[v] || 'badge-neutral'}">${v}</span>`;
+  }
+  async function load() {
+    try {
+      const rows = await api('/api/events' + (verdict ? `?verdict=${verdict}` : ''));
+      const body = document.getElementById('feedBody');
+      if (!rows.length) { body.innerHTML = '<tr><td colspan="10" class="empty">No matching traffic.</td></tr>'; return; }
+      body.innerHTML = rows.map(r => `
+        <tr class="fresh">
+          <td class="mono faint">${r.ts}</td>
+          <td class="ip">${r.src_ip}</td>
+          <td class="ip faint">${r.dst_ip || '—'}</td>
+          <td class="mono" style="font-size:12px;text-transform:uppercase;">${r.protocol}</td>
+          <td class="mono" style="font-size:12.5px;">${r.service}</td>
+          <td class="mono faint" style="font-size:12px;">${r.flag}</td>
+          <td class="mono faint" style="font-size:12px;">${r.bytes}</td>
+          <td>${r.attack_type ? '<span class="mono" style="font-size:12px;color:var(--amber)">' + r.attack_type + '</span>' : '<span class="faint">—</span>'}</td>
+          <td>${badge(r.verdict)}</td>
+          <td class="mono">${r.confidence}%</td>
+        </tr>`).join('');
+    } catch (e) {}
+  }
+  document.querySelectorAll('#filter button').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#filter button').forEach(x => x.classList.remove('on'));
+      b.classList.add('on'); verdict = b.dataset.v; load();
+    });
+  });
+  load();
+  setInterval(load, 2000);
+})();
+</script>
+{% endblock %}

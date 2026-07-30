@@ -1,0 +1,44 @@
+{% extends 'base_auth.html' %}
+{% block title %}AI-Based Smart Firewall{% endblock %}
+{% block body %}
+<div class="auth-wrap">
+  <section class="auth-brandside">
+    <div class="brandmark">
+      <div class="glyph">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#35d0b6" stroke-width="1.8">
+          <path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/>
+          <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="name">Smart<span>FW</span></div>
+    </div>
+
+    <div class="pitch">
+      <div class="eyebrow">Machine-learning intrusion detection</div>
+      <h2>A firewall that learns what your network looks like — and stops what doesn't.</h2>
+      <p>Static rules miss what they were never written for. SmartFW watches live traffic, scores every flow with a trained classifier, and blocks the source the moment an intrusion pattern appears.</p>
+      <ul class="checklist">
+        <li><span class="tick">→</span> Random Forest trained on the NSL-KDD intrusion dataset</li>
+        <li><span class="tick">→</span> Real-time flow analysis with automatic IP blocking</li>
+        <li><span class="tick">→</span> pfSense, iptables, or safe simulation enforcement</li>
+        <li><span class="tick">→</span> Threat alerts, live console, and a full audit trail</li>
+      </ul>
+    </div>
+
+    <div class="mono faint" style="font-size:12px;">International Islamic University Islamabad · Dept. of Information Technology</div>
+
+    <div class="radar"><div class="ring"></div><div class="sweep"></div></div>
+  </section>
+
+  <section class="auth-formside">
+    <div class="auth-card" style="text-align:center;">
+      <h1>Network defense,<br>on autopilot.</h1>
+      <p class="sub">Sign in to the operations console or create an administrator account to begin.</p>
+      <div style="display:grid;gap:12px;">
+        <a class="btn btn-primary block-btn" href="{{ url_for('auth.login') }}">Sign in to console</a>
+        <a class="btn btn-ghost block-btn" href="{{ url_for('auth.signup') }}">Create an account</a>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

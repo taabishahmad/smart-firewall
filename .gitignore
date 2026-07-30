@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Instance / runtime data
+instance/
+*.db
+*.sqlite3
+
+# Local configuration & secrets
+.env
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
+
+# Large dataset files (download separately — see README)
+data/KDDTrain+.txt
+data/KDDTest+.txt
+
+# Keep the trained model so the app runs out of the box:
+!ml/artifacts/firewall_model.joblib
+!ml/artifacts/metrics.json

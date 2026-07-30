@@ -1,0 +1,61 @@
+{% extends 'base_app.html' %}
+{% block title %}Settings · Smart Firewall{% endblock %}
+{% block crumb %}System{% endblock %}
+{% block heading %}Settings{% endblock %}
+
+{% block content %}
+<form method="post" action="{{ url_for('views.settings') }}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="grid grid-2">
+
+    <div class="card">
+      <div class="card-head"><h3>Detection policy</h3></div>
+      <div class="card-body stack">
+        <div class="field" style="margin:0;">
+          <label for="min_confidence">Minimum confidence to act on (%)</label>
+          <input class="input" id="min_confidence" name="min_confidence" type="number" min="50" max="100" value="{{ values.min_confidence }}">
+        </div>
+        <div class="field" style="margin:0;">
+          <label for="block_threshold">Malicious flows before blocking a source</label>
+          <input class="input" id="block_threshold" name="block_threshold" type="number" min="1" max="50" value="{{ values.block_threshold }}">
+        </div>
+        <div class="checkrow" style="margin:0;">
+          <label><input type="checkbox" name="auto_block" {{ 'checked' if values.auto_block == 'on' else '' }}> Automatically block detected threats</label>
+        </div>
+        <div class="field" style="margin:0;">
+          <label for="whitelist">Whitelist (comma-separated IPs, never blocked)</label>
+          <input class="input mono" id="whitelist" name="whitelist" value="{{ values.whitelist }}">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Capture &amp; enforcement</h3></div>
+      <div class="card-body stack">
+        <div class="field" style="margin:0;">
+          <label for="capture_interface">Capture interface (blank = default)</label>
+          <input class="input mono" id="capture_interface" name="capture_interface" placeholder="e.g. eth0" value="{{ values.capture_interface }}">
+        </div>
+        <div class="field" style="margin:0;">
+          <label for="enforcement_mode">Enforcement back-end</label>
+          <select class="input" id="enforcement_mode" name="enforcement_mode">
+            {% for m in ['auto', 'pfsense', 'iptables', 'simulation'] %}
+            <option value="{{ m }}" {{ 'selected' if values.enforcement_mode == m else '' }}>{{ m }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="engine-chip" style="margin:0;">
+          <div class="row"><span>Active back-end</span><span class="val">{{ enforcement }}</span></div>
+          <div class="row"><span>Note</span><span class="val faint" style="text-align:right;">restart engine to switch</span></div>
+        </div>
+        <p class="muted" style="font-size:13px;margin:0;">pfSense credentials and SMTP settings are read from environment variables — see the README.</p>
+      </div>
+    </div>
+
+  </div>
+  <div style="margin-top:18px;display:flex;gap:10px;">
+    <button class="btn btn-primary" type="submit">Save settings</button>
+    <a class="btn btn-ghost" href="{{ url_for('views.dashboard') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

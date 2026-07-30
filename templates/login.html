@@ -1,0 +1,52 @@
+{% extends 'base_auth.html' %}
+{% block title %}Sign in · Smart Firewall{% endblock %}
+{% block body %}
+<div class="auth-wrap">
+  <section class="auth-brandside">
+    <div class="brandmark">
+      <div class="glyph">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#35d0b6" stroke-width="1.8">
+          <path d="M12 2l8 3v6c0 5-3.5 8.5-8 11-4.5-2.5-8-6-8-11V5z"/>
+          <path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="name">Smart<span>FW</span></div>
+    </div>
+    <div class="pitch">
+      <div class="eyebrow">Operations console</div>
+      <h2>Welcome back.</h2>
+      <p>Sign in to watch live traffic, review detected threats, and manage what the firewall is blocking.</p>
+    </div>
+    <div class="mono faint" style="font-size:12px;">Default account · admin / admin123</div>
+    <div class="radar"><div class="ring"></div><div class="sweep"></div></div>
+  </section>
+
+  <section class="auth-formside">
+    <div class="auth-card">
+      <h1>Sign in</h1>
+      <p class="sub">Access the SmartFW console.</p>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}<ul class="flashes">{% for cat, msg in messages %}<li class="flash flash-{{ cat }}">{{ msg }}</li>{% endfor %}</ul>{% endif %}
+      {% endwith %}
+
+      <form method="post" action="{{ url_for('auth.login') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="field">
+          <label for="username">Username</label>
+          <input class="input" id="username" name="username" autocomplete="username" required autofocus>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input class="input" id="password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="checkrow">
+          <label><input type="checkbox" name="remember"> Keep me signed in</label>
+        </div>
+        <button class="btn btn-primary block-btn" type="submit">Sign in</button>
+      </form>
+      <p class="auth-alt">No account yet? <a href="{{ url_for('auth.signup') }}">Create one</a></p>
+    </div>
+  </section>
+</div>
+{% endblock %}

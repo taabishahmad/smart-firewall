@@ -1,0 +1,58 @@
+{% extends 'base_app.html' %}
+{% block title %}Threats · Smart Firewall{% endblock %}
+{% block crumb %}Operations{% endblock %}
+{% block heading %}Threats{% endblock %}
+
+{% block content %}
+<div class="card">
+  <div class="card-head">
+    <h3>Detected threats</h3>
+    <span class="mono faint">high-severity events raised by the classifier</span>
+  </div>
+  <div class="table-wrap">
+    <table class="data">
+      <thead>
+        <tr><th>Time</th><th>Source IP</th><th>Category</th><th>Service</th><th>Confidence</th><th>Alert</th><th>Status</th><th></th></tr>
+      </thead>
+      <tbody id="alertBody">
+        {% if not alerts %}
+        <tr><td colspan="8" class="empty">No threats recorded. The network is quiet.</td></tr>
+        {% endif %}
+        {% for a in alerts %}
+        <tr data-id="{{ a.id }}">
+          <td class="mono faint">{{ a.ts.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+          <td class="ip">{{ a.src_ip }}</td>
+          <td><span class="mono" style="color:var(--rose)">{{ a.attack_type }}</span></td>
+          <td class="mono" style="font-size:12.5px;">{{ a.service }}</td>
+          <td>
+            <div class="row-between" style="gap:8px;">
+              <div class="meter"><span style="width:{{ a.confidence }}%"></span></div>
+              <span class="mono" style="font-size:12px;">{{ a.confidence|round(1) }}%</span>
+            </div>
+          </td>
+          <td>{% if a.emailed %}<span class="badge badge-allow">emailed</span>{% else %}<span class="badge badge-neutral">logged</span>{% endif %}</td>
+          <td class="ackcell">{% if a.acknowledged %}<span class="badge badge-neutral">acknowledged</span>{% else %}<span class="badge badge-flag">open</span>{% endif %}</td>
+          <td>{% if not a.acknowledged %}<button class="btn btn-ghost btn-sm ack" data-id="{{ a.id }}">Acknowledge</button>{% endif %}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.querySelectorAll('.ack').forEach(b => {
+  b.addEventListener('click', async () => {
+    try {
+      await post(`/api/alerts/${b.dataset.id}/ack`);
+      const row = b.closest('tr');
+      row.querySelector('.ackcell').innerHTML = '<span class="badge badge-neutral">acknowledged</span>';
+      b.remove();
+      toast('Alert acknowledged');
+    } catch (e) { toast('Could not acknowledge', 'err'); }
+  });
+});
+</script>
+{% endblock %}

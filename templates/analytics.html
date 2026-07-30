@@ -1,0 +1,102 @@
+{% extends 'base_app.html' %}
+{% block title %}Model Analytics · Smart Firewall{% endblock %}
+{% block crumb %}Intelligence{% endblock %}
+{% block heading %}Model Analytics{% endblock %}
+
+{% block content %}
+{% if not metrics %}
+<div class="card"><div class="empty">No model metrics found. Train the model first: <span class="mono">python ml/train_model.py</span></div></div>
+{% else %}
+{% set best = (metrics.within_distribution | selectattr('model', 'equalto', metrics.best_model) | first) %}
+<div class="stack">
+
+  <div class="grid grid-4">
+    <div class="card stat accent-teal">
+      <div class="label">Deployed model</div>
+      <div class="value c-teal" style="font-size:22px;">{{ metrics.best_model }}</div>
+      <div class="foot">trained {{ metrics.trained_at }}</div>
+    </div>
+    <div class="card stat accent-teal">
+      <div class="label">Accuracy</div>
+      <div class="value mono c-teal">{{ best.accuracy }}%</div>
+      <div class="foot">within-distribution</div>
+    </div>
+    <div class="card stat accent-indigo">
+      <div class="label">F1 score</div>
+      <div class="value mono c-indigo">{{ best.f1 }}%</div>
+      <div class="foot">precision {{ best.precision }}% · recall {{ best.recall }}%</div>
+    </div>
+    <div class="card stat accent-amber">
+      <div class="label">Dataset</div>
+      <div class="value" style="font-size:22px;">{{ metrics.dataset.name }}</div>
+      <div class="foot">{{ '{:,}'.format(metrics.dataset.train_rows) }} train · {{ metrics.dataset.features_used }} features</div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="card-head"><h3>Algorithm comparison</h3><span class="mono faint">80/20 split of KDDTrain+</span></div>
+      <div class="card-body">
+        {% for r in metrics.within_distribution %}
+        {% set cls = 'bar-rf' if 'Random' in r.model else ('bar-dt' if 'Decision' in r.model else 'bar-nb') %}
+        <div class="metric-row">
+          <span class="name">{{ r.model }}{% if r.model == metrics.best_model %} <span class="badge badge-allow" style="margin-left:4px;">deployed</span>{% endif %}</span>
+          <div class="bar {{ cls }}"><span style="width:{{ r.f1 }}%"></span></div>
+          <span class="num">{{ r.f1 }}%</span>
+        </div>
+        {% endfor %}
+        <hr class="hr">
+        <div class="kv">
+          {% for r in metrics.within_distribution %}
+          <dt>{{ r.model }}</dt>
+          <dd class="mono" style="font-size:13px;">acc {{ r.accuracy }}% · prec {{ r.precision }}% · rec {{ r.recall }}% · f1 {{ r.f1 }}%</dd>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><h3>Confusion matrix</h3><span class="mono faint">{{ metrics.best_model }} · held-out split</span></div>
+      <div class="card-body">
+        {% set cm = metrics.confusion_matrix_within %}
+        <div class="confusion">
+          <div class="cm-lbl"></div>
+          <div class="cm-lbl">pred normal</div>
+          <div class="cm-lbl">pred attack</div>
+          <div class="cm-lbl">actual normal</div>
+          <div class="cm cm-tn"><span class="n">{{ '{:,}'.format(cm[0][0]) }}</span><span class="k">true negative</span></div>
+          <div class="cm cm-fp"><span class="n">{{ '{:,}'.format(cm[0][1]) }}</span><span class="k">false positive</span></div>
+          <div class="cm-lbl">actual attack</div>
+          <div class="cm cm-fn"><span class="n">{{ '{:,}'.format(cm[1][0]) }}</span><span class="k">false negative</span></div>
+          <div class="cm cm-tp"><span class="n">{{ '{:,}'.format(cm[1][1]) }}</span><span class="k">true positive</span></div>
+        </div>
+        <hr class="hr">
+        <p class="muted" style="font-size:13.5px;">On the separate <span class="mono">KDDTest+</span> set — which contains attack types held out of training — the deployed model reaches
+        {% set gen = (metrics.generalisation | selectattr('model','equalto',metrics.best_model) | first) %}
+        <span class="mono" style="color:var(--teal)">{{ gen.accuracy }}%</span> accuracy, a realistic measure of how it handles previously unseen attacks.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head"><h3>What the model pays attention to</h3><span class="mono faint">top feature importances</span></div>
+    <div class="card-body">
+      {% if metrics.feature_importances %}
+        {% set top = metrics.feature_importances[:12] %}
+        {% set maxi = top[0].importance %}
+        {% for f in top %}
+        <div class="metric-row">
+          <span class="name mono" style="font-size:12.5px;">{{ f.feature }}</span>
+          <div class="bar bar-rf"><span style="width:{{ (f.importance / maxi * 100)|round(1) }}%"></span></div>
+          <span class="num">{{ (f.importance * 100)|round(1) }}%</span>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty">Feature importances are only available for tree-based models.</div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endif %}
+{% endblock %}
