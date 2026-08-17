@@ -6,10 +6,6 @@ by a trained Random Forest model, and malicious sources are automatically blocke
 the firewall while an email alert is raised. Everything is driven from a real-time
 web console.
 
-This is the reference implementation of the Final Year Project proposal
-*"AI-Based Smart Firewall for Small Network Security Using Machine Learning &
-Intrusion Detection"* (AbdiAziz Hassan Osman, BS Information Technology, IIUI).
-
 ---
 
 ## 1. What it does
@@ -78,12 +74,9 @@ you do **not** need to retrain to run the app.
 python run.py
 ```
 
-Open <http://127.0.0.1:5000> and log in with:
+Open <http://127.0.0.1:5000> and log in.
 
-```
-username: admin
-password: admin123
-```
+
 
 On the **Dashboard**, use the **Simulate** control to inject a benign / port-scan /
 DoS / brute-force / mixed traffic scenario. The synthetic traffic runs through the
@@ -176,17 +169,7 @@ and writes `ml/artifacts/firewall_model.joblib` and `ml/artifacts/metrics.json`
 
 ---
 
-## 7. Configuration
-
-All settings have working defaults. To override, copy `.env.example` to `.env` and
-edit it (pfSense credentials, SMTP for email alerts, admin password, secret key).
-Detection thresholds (block threshold, minimum confidence, auto-block on/off,
-whitelist, capture interface, enforcement mode) are editable live on the
-**Settings** page.
-
----
-
-## 8. Project layout
+## 7. Project layout
 
 ```
 smart_firewall/
@@ -215,12 +198,4 @@ smart_firewall/
 
 ---
 
-## 9. Default credentials
 
-```
-username: admin
-password: admin123
-```
-
-Change the password from `.env` (`ADMIN_PASSWORD`) before any non-local use, and you
-can register additional accounts from the **Sign up** page.
